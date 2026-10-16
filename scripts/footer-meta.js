@@ -3,11 +3,11 @@
  * footer_meta(footer) — the single-line footer meta row.
  *
  * Composes the author / powered-by / ICP segments into ONE line joined by
- * ` · `, in every supported language, so the client-side switcher can swap the
- * whole line without a reload:
+ * a comma, in every supported language, so the client-side switcher can swap
+ * the whole line without a reload:
  *
- *   { en: "Created by @n · Powered by Hexo & Noviluna",
- *     "zh-CN": "本站由 @n 创建 · 由 Hexo 强力驱动，主题为 Noviluna",
+ *   { en: "Created by @n, Powered by Hexo & Noviluna",
+ *     "zh-CN": "本站由 @n 创建，由 Hexo 强力驱动，主题为 Noviluna",
  *     current: <the page language's line, rendered server-side> }
  *
  * A segment is omitted entirely when its value is empty, so
@@ -15,14 +15,17 @@
  * The copyright and license lines are NOT part of this row.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SEGMENT_SEPARATOR = void 0;
 exports.composeLine = composeLine;
 const path_1 = require("path");
 const i18n_core_1 = require("./i18n-core");
 const lang_files_1 = require("./lang-files");
 const HEXO_LINK = '<a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a>';
 const THEME_NAME = 'Noviluna';
-exports.SEGMENT_SEPARATOR = ' · ';
+/**
+ * `en` reads with a comma + space; `zh-CN` with a full-width comma, which is
+ * what the language files already use inside their own sentences.
+ */
+const SEPARATOR = { en: ', ', 'zh-CN': '，' };
 /** Replace each `%s` in `template` with the matching entry of `args`. */
 function fill(template, args) {
     if (!template)
@@ -43,7 +46,7 @@ function composeLine(footer, dict, lang) {
     const icp = (0, i18n_core_1.variant)(footer.icp, lang);
     if (icp)
         segments.push(icp);
-    return segments.join(exports.SEGMENT_SEPARATOR).trim();
+    return segments.join(SEPARATOR[lang]).trim();
 }
 function footerMeta(footer = {}) {
     const dir = (0, path_1.join)(hexo.theme_dir, 'languages');
