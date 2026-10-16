@@ -3,24 +3,29 @@
 // Design: quiet, typographic minimalism.
 
 // ---------------------------------------------------------------
-// §4.1 Tokens — light (cool fog gray)
+// §4.1 Tokens — light (Geist register)
+//
+// Pure white pages over a cool neutral gray scale. Elevation comes from
+// hairlines and spacing, never from a tinted surface — a washed-out page
+// colour is what makes a palette read as muddy. Borders are black at 8%,
+// so a divider tints whatever it crosses instead of asserting its own hue.
 // ---------------------------------------------------------------
 :root
   // color — light
-  --bg            #F4F5F6
-  --bg-elevated   #ECEDEF
-  --bg-hover      #E5E7EA
-  --fg            #1A1D21
-  --fg-muted      rgba(26, 29, 33, 0.60)
-  --fg-faint      rgba(26, 29, 33, 0.45)
-  --border        rgba(26, 29, 33, 0.12)
-  --border-strong rgba(26, 29, 33, 0.25)
-  --accent        #2563EB
-  --hljs-string   #1A7F37
-  --hljs-number   #953800
-  --hljs-keyword  #8250DF
-  --hljs-title    #0550AE
-  --hljs-variable #953800
+  --bg            #FFFFFF
+  --bg-elevated   #F2F2F2
+  --bg-hover      #F2F2F2
+  --fg            #171717
+  --fg-muted      rgba(23, 23, 23, 0.62)
+  --fg-faint      rgba(23, 23, 23, 0.42)
+  --border        rgba(0, 0, 0, 0.08)
+  --border-strong rgba(0, 0, 0, 0.20)
+  --accent        #006BFF
+  --hljs-keyword  #BD2864
+  --hljs-string   #297A3A
+  --hljs-number   #0068D6
+  --hljs-title    #7820BC
+  --hljs-variable #CB2A2F
   --mark-bg       rgba(255, 212, 0, 0.32)
   color-scheme    light
 
@@ -64,7 +69,9 @@
 
   --transition 150ms ease
 
-// Dark — explicit attribute
+// Dark — Geist register: a pure black page, porcelain ink, and hairlines
+// that brighten (white at 14%) instead of tinting.
+// Explicit attribute
 [data-theme="dark"]
   color-scheme dark
 
@@ -74,38 +81,38 @@
     color-scheme dark
 
 [data-theme="dark"]
-  --bg            #0F1113
-  --bg-elevated   #17191D
-  --bg-hover      #1F2227
-  --fg            #E7E9EC
-  --fg-muted      rgba(231, 233, 236, 0.60)
-  --fg-faint      rgba(231, 233, 236, 0.45)
-  --border        rgba(231, 233, 236, 0.14)
-  --border-strong rgba(231, 233, 236, 0.28)
-  --accent        #6B9BFF
-  --hljs-string   #7EC699
-  --hljs-number   #F0A35E
-  --hljs-keyword  #C792EA
-  --hljs-title    #82AAFF
-  --hljs-variable #F0A35E
+  --bg            #000000
+  --bg-elevated   #1A1A1A
+  --bg-hover      #1A1A1A
+  --fg            #EDEDED
+  --fg-muted      rgba(237, 237, 237, 0.62)
+  --fg-faint      rgba(237, 237, 237, 0.44)
+  --border        rgba(255, 255, 255, 0.14)
+  --border-strong rgba(255, 255, 255, 0.28)
+  --accent        #47A8FF
+  --hljs-keyword  #F75F8F
+  --hljs-string   #62C073
+  --hljs-number   #52A8FF
+  --hljs-title    #BF7AF0
+  --hljs-variable #FF6166
   --mark-bg       rgba(255, 212, 0, 0.22)
 
 @media (prefers-color-scheme: dark)
   :root:not([data-theme="light"])
-    --bg            #0F1113
-    --bg-elevated   #17191D
-    --bg-hover      #1F2227
-    --fg            #E7E9EC
-    --fg-muted      rgba(231, 233, 236, 0.60)
-    --fg-faint      rgba(231, 233, 236, 0.45)
-    --border        rgba(231, 233, 236, 0.14)
-    --border-strong rgba(231, 233, 236, 0.28)
-    --accent        #6B9BFF
-    --hljs-string   #7EC699
-    --hljs-number   #F0A35E
-    --hljs-keyword  #C792EA
-    --hljs-title    #82AAFF
-    --hljs-variable #F0A35E
+    --bg            #000000
+    --bg-elevated   #1A1A1A
+    --bg-hover      #1A1A1A
+    --fg            #EDEDED
+    --fg-muted      rgba(237, 237, 237, 0.62)
+    --fg-faint      rgba(237, 237, 237, 0.44)
+    --border        rgba(255, 255, 255, 0.14)
+    --border-strong rgba(255, 255, 255, 0.28)
+    --accent        #47A8FF
+    --hljs-keyword  #F75F8F
+    --hljs-string   #62C073
+    --hljs-number   #52A8FF
+    --hljs-title    #BF7AF0
+    --hljs-variable #FF6166
     --mark-bg       rgba(255, 212, 0, 0.22)
 
 // ---------------------------------------------------------------
