@@ -1,0 +1,50 @@
+nav:
+  blog: 博客
+  archives: 归档
+  about: 关于
+  links: 友链
+  categories: 分类
+  tags: 标签
+  menu: 菜单
+
+pagination:
+  newer: 较新
+  older: 较早
+
+archive:
+  posts_in: "%s年"
+  tag: "标签：%s"
+  category: "分类：%s"
+  post_count: "%s 篇"
+
+meta:
+  views: 次阅读
+  edited: "编辑于 %s"
+  words: "共 %s 字"
+  min: "约 %s 分钟"
+
+toc: 目录
+related_posts: 相关文章
+comments: 评论
+
+search:
+  placeholder: 搜索文章…
+  no_results: 无结果
+  esc: esc
+  close: 关闭搜索
+
+lang:
+  switch: 切换语言
+
+links:
+  title: 友链
+  intro: 一些值得一看的网站和朋友。
+
+not_found:
+  title: 页面不存在
+  text: 你要找的页面不存在，返回<a href="%s">首页</a>。
+
+footer:
+  license: "本博客所有文章除特别声明外，均采用 %s 许可协议，转载请注明出处。"
+  author: "本站由 %s 创建"
+  powered: "由 %s 强力驱动，主题为 %s"

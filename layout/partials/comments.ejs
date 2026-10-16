@@ -1,0 +1,30 @@
+<%
+  // Giscus embed. Renders NOTHING unless enable + all required fields are set
+  // and the post has not opted out with `comments: false`.
+  var c = theme.comments || {};
+  var g = c.giscus || {};
+  var ready = c.enable && c.service === 'giscus'
+    && g.repo && g.repo_id && g.category && g.category_id
+    && page.comments !== false;
+  var giscusLang = g.lang || (String(config.language || 'en').indexOf('zh') === 0 ? 'zh-CN' : 'en');
+%>
+<% if (ready) { %>
+  <section class="comments">
+    <h2 class="section-heading"><%= __('comments') %></h2>
+    <script src="https://giscus.app/client.js"
+      data-repo="<%= g.repo %>"
+      data-repo-id="<%= g.repo_id %>"
+      data-category="<%= g.category %>"
+      data-category-id="<%= g.category_id %>"
+      data-mapping="<%= g.mapping || 'pathname' %>"
+      data-strict="0"
+      data-reactions-enabled="<%= g.reactions ? '1' : '0' %>"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="<%= g.theme || 'preferred_color_scheme' %>"
+      data-lang="<%= giscusLang %>"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async></script>
+  </section>
+<% } %>

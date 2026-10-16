@@ -1,0 +1,38 @@
+<% if (page.links) { %>
+  <%
+    // Intro line: theme.links_intro wins when set (plain string or
+    // { en, "zh-CN" } map), otherwise fall back to the links.intro i18n key.
+    // Like every other UI string on this page both variants are rendered into
+    // data-en/data-zh so the client switcher can swap it live.
+    var langs = i18n_langs();
+    var introV = (theme.links_intro != null)
+      ? i18n_variants(theme.links_intro)
+      : { en: (langs.en || {})['links.intro'] || '', 'zh-CN': (langs['zh-CN'] || {})['links.intro'] || '' };
+    var intro = i18n_text(theme.links_intro) || __('links.intro');
+  %>
+  <article class="post">
+    <header class="article-header">
+      <h1 class="article-title" data-i18n="links.title"><%= __('links.title') %></h1>
+      <p class="article-meta" data-en="<%= introV.en %>" data-zh="<%= introV['zh-CN'] %>"><%= intro %></p>
+    </header>
+  </article>
+  <section class="post-list links-list">
+    <% (site.data.links || []).forEach(function (link) { %>
+      <a class="post-row link-row" href="<%= link.url %>" target="_blank" rel="noopener">
+        <span class="link-name"><%= link.name %></span>
+        <span class="post-row-body">
+          <span class="link-desc"><%= link.desc %></span>
+        </span>
+      </a>
+    <% }); %>
+  </section>
+<% } else { %>
+  <article class="post<%= page.wide ? ' is-wide' : '' %>">
+    <header class="article-header">
+      <h1 class="article-title"><%= page.title %></h1>
+    </header>
+    <div class="prose">
+      <%- page.content %>
+    </div>
+  </article>
+<% } %>

@@ -1,0 +1,46 @@
+{
+  "name": "hexo-theme-noviluna",
+  "version": "1.0.0",
+  "description": "A quiet, typographic Hexo theme — one column, hairlines, and nothing else.",
+  "keywords": [
+    "hexo",
+    "hexo-theme",
+    "blog",
+    "minimal",
+    "typography",
+    "dark-mode"
+  ],
+  "license": "MIT",
+  "author": "dingyi222666",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dingyi222666/hexo-theme-noviluna.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dingyi222666/hexo-theme-noviluna/issues"
+  },
+  "homepage": "https://github.com/dingyi222666/hexo-theme-noviluna#readme",
+  "files": [
+    "_config.yml",
+    "languages",
+    "layout",
+    "scripts",
+    "source",
+    "src",
+    "tsconfig.base.json",
+    "tsconfig.scripts.json",
+    "tsconfig.client.json"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.scripts.json && tsc -p tsconfig.client.json",
+    "watch": "tsc -p tsconfig.scripts.json --watch --preserveWatchOutput & tsc -p tsconfig.client.json --watch --preserveWatchOutput & wait"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.0.0",
+    "typescript": "~5.9.0"
+  }
+}

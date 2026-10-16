@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+
+# build scratch
+public/
+db.json
+
+# editors & OS
+.DS_Store
+.idea/
+.vscode/
+*.log
+package-lock.json

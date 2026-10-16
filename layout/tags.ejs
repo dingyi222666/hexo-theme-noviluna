@@ -1,0 +1,16 @@
+<article class="post">
+  <header class="article-header">
+    <h1 class="article-title" data-i18n="nav.tags"><%= __('nav.tags') %></h1>
+  </header>
+</article>
+
+<section class="post-list links-list">
+  <% site.tags.sort('name').each(function (tag) { %>
+    <a class="post-row link-row" href="<%= url_for(tag.path) %>">
+      <span class="link-name"><%= tag.name %></span>
+      <span class="post-row-body">
+        <span class="link-desc" data-i18n-fmt="archive.post_count" data-i18n-args="<%= encodeURIComponent(JSON.stringify([String(tag.length)])) %>"><%= __('archive.post_count', tag.length) %></span>
+      </span>
+    </a>
+  <% }); %>
+</section>

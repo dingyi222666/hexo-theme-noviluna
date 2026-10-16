@@ -1,0 +1,102 @@
+<%
+  var meta = theme.meta || {};
+  var isWide = !!page.wide;
+
+  // TOC: theme gate + per-post opt-out + wide posts suppress the rail.
+  var tocHtml = '';
+  if (theme.toc && theme.toc.enable && page.toc !== false && !isWide) {
+    tocHtml = toc(page.content, { list_number: false, min_depth: 2, max_depth: theme.toc.max_depth || 3 });
+    // Hide the rail entirely when the post has <2 headings.
+    var tocItems = (tocHtml.match(/toc-link/g) || []).length;
+    if (tocItems < 2) tocHtml = '';
+  }
+  var hasToc = !!tocHtml;
+
+  // Last updated — only when it differs from the publish date by >1 day.
+  var showUpdated = meta.updated !== false && page.updated && page.updated.diff(page.date, 'days') > 0;
+
+  // Word count / reading time (post pages only, never on index).
+  var showWords = meta.wordcount !== false;
+
+  // busuanzi page view counter.
+  var showViews = meta.views && theme.busuanzi && theme.busuanzi.enable && theme.busuanzi.page_pv;
+
+  // Related posts.
+  var rel = [];
+  if (theme.related_posts && theme.related_posts.enable && page.related !== false) {
+    rel = related_posts(page, { max: theme.related_posts.max || 4 });
+  }
+%>
+<div class="post-wrap<%= hasToc ? ' has-toc' : '' %><%= isWide ? ' is-wide' : '' %>">
+  <article class="post">
+    <header class="article-header">
+      <h1 class="article-title"><%= page.title %></h1>
+      <p class="article-meta">
+        <time datetime="<%= page.date.toISOString() %>"><%= post_date(page.date) %></time><% if (page.categories && page.categories.length) { %>
+          <span class="meta-sep"> · </span><a class="meta-cat" href="<%= url_for(page.categories.toArray()[0].path) %>"><%= page.categories.toArray()[0].name %></a><% } %>
+      </p>
+      <% if (page.tags && page.tags.length) { %>
+        <% var tagNames = []; %>
+        <% page.tags.each(function (tag) { tagNames.push(tag.name); }); %>
+        <p class="article-tags"><%= tagNames.join(', ') %></p>
+      <% } %>
+      <%
+        var wordCount = showWords ? symbols_count(page) : 0;
+        var readMin = showWords ? time_to_read(page) : 0;
+        var updatedTs = showUpdated ? page.updated.toISOString() : '';
+        var extrasRaw = { words: wordCount, min: readMin, updated: updatedTs, showViews: !!showViews };
+        var extras = [];
+        if (showWords) {
+          extras.push(__('meta.words', wordCount.toLocaleString('en-US')));
+          extras.push(__('meta.min', readMin));
+        }
+        if (showUpdated) extras.push(__('meta.edited', post_date(page.updated)));
+      %>
+      <% if (extras.length || showViews) { %>
+        <p class="article-extras" data-extras="<%= encodeURIComponent(JSON.stringify(extrasRaw)) %>">
+          <%= extras.join(' · ') %><% if (showViews) { %><span id="busuanzi_container_page_pv" hidden><%= extras.length ? ' · ' : '' %><span id="busuanzi_value_page_pv"></span> <span data-i18n="meta.views"><%= __('meta.views') %></span></span><% } %>
+        </p>
+      <% } %>
+    </header>
+    <div class="prose">
+      <%- page.content %>
+    </div>
+  </article>
+
+  <% if (hasToc) { %>
+    <aside class="toc-rail">
+      <div class="toc-rail-inner">
+        <h2 class="toc-heading" data-i18n="toc"><%= __('toc') %></h2>
+        <div class="toc-body"><%- tocHtml %></div>
+      </div>
+    </aside>
+  <% } %>
+</div>
+
+<% if (rel.length) { %>
+  <nav class="related-posts">
+    <h2 class="section-heading" data-i18n="related_posts"><%= __('related_posts') %></h2>
+    <ul class="related-list">
+      <% rel.forEach(function (p) { %>
+        <li><a href="<%= url_for(p.path) %>"><time datetime="<%= p.date.toISOString() %>"><%= post_date(p.date) %></time><span class="related-title"><%= p.title %></span></a></li>
+      <% }); %>
+    </ul>
+  </nav>
+<% } %>
+
+<%- partial('partials/comments') %>
+
+<% if (page.prev || page.next) { %>
+  <nav class="post-nav">
+    <span>
+      <% if (page.next) { %>
+        <a href="<%= url_for(page.next.path) %>">&larr; <span data-i18n="pagination.older"><%= __('pagination.older') %></span></a>
+      <% } %>
+    </span>
+    <span>
+      <% if (page.prev) { %>
+        <a href="<%= url_for(page.prev.path) %>"><span data-i18n="pagination.newer"><%= __('pagination.newer') %></span> &rarr;</a>
+      <% } %>
+    </span>
+  </nav>
+<% } %>

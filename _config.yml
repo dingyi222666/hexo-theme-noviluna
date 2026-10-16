@@ -1,0 +1,124 @@
+# Noviluna theme configuration
+#
+# Every feature is opt-in / opt-out here. When something is disabled the theme
+# renders nothing for it — no empty containers, no dead scripts.
+#
+# Fields documented as "bilingual" accept either a plain string (used for every
+# language) or a map with per-language variants:
+#   author: "@name"
+#   author: { en: "@name", "zh-CN": "@名称" }
+
+# Accent colour — used sparingly. Available to the stylesheet as var(--accent).
+accent: "#2563EB"
+
+# Show a one-line excerpt under each title on the index (hidden ≤640px).
+excerpt: true
+
+# Header navigation. Stock labels (Blog / Archives / Tags / Categories / About /
+# Links) are translated automatically through the nav.* i18n keys.
+nav:
+  - label: Blog
+    url: /
+  - label: Archives
+    url: /archives/
+  - label: Tags
+    url: /tags/
+  - label: Categories
+    url: /categories/
+  - label: About
+    url: /about/
+  - label: Links
+    url: /links/
+
+# ---------------------------------------------------------------
+# Webfonts. Turn either off to fall back to the system font stack.
+#   geist     — Geist + Geist Mono (latin) via Google Fonts
+#   harmonyos — HarmonyOS Sans SC (CJK) via jsDelivr, loaded after
+#               Geist so latin glyphs always come from Geist
+# ---------------------------------------------------------------
+fonts:
+  geist: true
+  harmonyos: true
+
+# ---------------------------------------------------------------
+# Post meta extras. Shown as a third faint line under the title.
+# ---------------------------------------------------------------
+meta:
+  updated: true        # "Edited …" when page.updated is >1 day after page.date
+  wordcount: true      # "1,234 words · 5 min" — never shown on the index
+  views: false         # busuanzi page views — requires busuanzi.enable
+
+# ---------------------------------------------------------------
+# Table of contents — sticky right rail, ≥1200px viewports only.
+# Hidden on posts with fewer than 2 headings, on `wide: true` posts,
+# and per post with front-matter `toc: false`.
+# ---------------------------------------------------------------
+toc:
+  enable: true
+  max_depth: 3         # h2–h3
+
+# ---------------------------------------------------------------
+# Related posts — build-time same-tag scoring, no plugin required.
+# Per-post opt-out: front-matter `related: false`.
+# ---------------------------------------------------------------
+related_posts:
+  enable: true
+  max: 4
+
+# ---------------------------------------------------------------
+# Comments — giscus (GitHub Discussions). The embed is only rendered when
+# enable is true AND repo / repo_id / category_id are all filled in.
+# Get the values from https://giscus.app (requires the giscus app on a
+# public repository with Discussions enabled).
+# Per-post opt-out: front-matter `comments: false`.
+# ---------------------------------------------------------------
+comments:
+  enable: false
+  service: giscus
+  giscus:
+    repo: ""           # e.g. "user/repo"
+    repo_id: ""        # e.g. "R_kgDO…"
+    category: "Announcements"
+    category_id: ""    # e.g. "DIC_kwDO…"
+    mapping: pathname  # one Discussion per post URL
+    reactions: false   # keep the embed lean
+    lang: ""           # empty → follow the site language
+
+# ---------------------------------------------------------------
+# View counter — busuanzi. Off by default: the upstream service has had
+# outages, so the script host is configurable (mirror or self-hosted).
+# The counter stays hidden until the script actually loads.
+# ---------------------------------------------------------------
+busuanzi:
+  enable: false
+  src: "https://busuanzi.9420.ltd/js"
+  site_uv: false       # footer "N visitors"
+  page_pv: true        # post meta "N views"
+
+# ---------------------------------------------------------------
+# Local search — magnifier in the header opens a full-screen overlay.
+# Requires hexo-generator-search; see the README for the site config.
+# ---------------------------------------------------------------
+search:
+  enable: true
+  max_results: 10
+
+# ---------------------------------------------------------------
+# Footer. Every line renders only when it has a value.
+# ---------------------------------------------------------------
+footer:
+  copyright: true                # © <year> <site title>
+  license: ""                    # e.g. "CC BY-NC-SA 4.0" — known CC licences are linked
+  author: ""                     # bilingual — "Created by …"
+  powered: true                  # sentence comes from languages/*.yml
+  icp: ""                        # bilingual — rendered as-is; empty hides the line
+
+# Client-side UI language switcher (the EN/中 button in the footer).
+# Switches chrome strings and date formats only; post content keeps the
+# language of the site.
+language_switcher: true
+
+# Intro line on the /links/ page (bilingual).
+links_intro:
+  en: "A short list of sites and people worth your time."
+  zh-CN: "一些值得你花时间的网站和人。"

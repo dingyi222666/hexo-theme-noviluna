@@ -1,0 +1,47 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function () {
+      var t;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <%
+    var title = page.title ? page.title + ' — ' + config.title : config.title;
+    var description = page.description || config.description || '';
+    // Both languages dumped for the client-side language toggle.
+    var i18nDump = i18n_langs();
+  %>
+  <title><%= title %></title>
+  <% if (description) { %><meta name="description" content="<%= description %>"><% } %>
+  <% if (config.author) { %><meta name="author" content="<%= config.author %>"><% } %>
+  <link rel="alternate" href="<%= url_for('/atom.xml') %>" type="application/atom+xml" title="<%= config.title %>">
+  <% var fonts = theme.fonts || {}; %>
+  <% if (fonts.geist !== false || fonts.harmonyos !== false) { %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <% } %>
+  <% if (fonts.geist !== false) { %>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap">
+  <% } %>
+  <% if (fonts.harmonyos !== false) { %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/harmonyos-sans-webfont-splitted@1.2.1/dist/HarmonyOS_Sans_SC/index.css">
+  <% } %>
+  <%- css('css/noviluna') %>
+  <script>
+    window.__NOVILUNA_LANGS__ = <%- JSON.stringify(i18nDump) %>;
+    window.__NOVILUNA_DEFAULT_LANG__ = <%- JSON.stringify(String(config.language || 'en').indexOf('zh') === 0 ? 'zh-CN' : 'en') %>;
+    window.__NOVILUNA_I18N__ = {
+      searchPlaceholder: <%- JSON.stringify(__('search.placeholder')) %>,
+      noResults: <%- JSON.stringify(__('search.no_results')) %>,
+      searchUrl: <%- JSON.stringify(url_for('/search.json')) %>
+    };
+  </script>
+</head>

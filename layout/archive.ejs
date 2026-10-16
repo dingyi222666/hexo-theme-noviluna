@@ -1,0 +1,37 @@
+<%
+  // Tag/category archives carry a term name through %s, so data-i18n-args
+  // holds the percent-encoded argument the client needs to re-render them.
+  var arg = function (v) { return encodeURIComponent(JSON.stringify([String(v)])); };
+  var label = __('nav.archives');
+  var labelAttrs = '';
+  if (page.tag) {
+    label = __('archive.tag', page.tag);
+    labelAttrs = ' data-i18n-fmt="archive.tag" data-i18n-args="' + arg(page.tag) + '"';
+  } else if (page.category) {
+    label = __('archive.category', page.category);
+    labelAttrs = ' data-i18n-fmt="archive.category" data-i18n-args="' + arg(page.category) + '"';
+  } else {
+    labelAttrs = ' data-i18n="nav.archives"';
+  }
+%>
+<article class="post">
+  <header class="article-header">
+    <h1 class="article-title"<%- labelAttrs %>><%= label %></h1>
+  </header>
+</article>
+
+<section class="post-list">
+  <% var lastYear = null; %>
+  <% page.posts.each(function (post) { %>
+    <% var y = date(post.date, 'YYYY'); %>
+    <% if (y !== lastYear) { lastYear = y; %>
+      <h2 class="archive-year" data-i18n-fmt="archive.posts_in" data-i18n-args="<%= arg(y) %>"><%= __('archive.posts_in', y) %></h2>
+    <% } %>
+    <a class="post-row" href="<%= url_for(post.path) %>">
+      <time class="post-row-date" datetime="<%= post.date.toISOString() %>"><%= post_date(post.date) %></time>
+      <span class="post-row-body">
+        <span class="post-row-title"><%= post.title %></span>
+      </span>
+    </a>
+  <% }); %>
+</section>

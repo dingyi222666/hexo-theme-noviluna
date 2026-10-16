@@ -1,0 +1,17 @@
+<%
+  // not_found.text embeds an <a> around the %s home-page URL, so it must be
+  // rendered raw (the placeholder distinguishes HTML from plain strings).
+  var home = url_for('/');
+  var langs = i18n_langs();
+  var nfEn = (langs.en || {})['not_found.text'] || __('not_found.text');
+  var nfZh = (langs['zh-CN'] || {})['not_found.text'] || nfEn;
+  var enc = function (s) { return encodeURIComponent(JSON.stringify([s])); };
+%>
+<article class="post">
+  <header class="article-header">
+    <h1 class="article-title" data-i18n="not_found.title"><%= __('not_found.title') %></h1>
+    <p class="article-meta" data-i18n-fmt="not_found.text"
+       data-args-en="<%= enc(home) %>" data-args-zh="<%= enc(home) %>"
+       data-en="<%= nfEn.replace('%s', home) %>" data-zh="<%= nfZh.replace('%s', home) %>"><%- __('not_found.text', home) %></p>
+  </header>
+</article>

@@ -1,0 +1,28 @@
+<section class="post-list">
+  <% page.posts.each(function (post) { %>
+    <a class="post-row" href="<%= url_for(post.path) %>">
+      <time class="post-row-date" datetime="<%= post.date.toISOString() %>"><%= post_date(post.date) %></time>
+      <span class="post-row-body">
+        <span class="post-row-title"><%= post.title %></span>
+        <% if (theme.excerpt !== false && post.excerpt) { %>
+          <span class="post-row-excerpt"><%- strip_html(post.excerpt) %></span>
+        <% } %>
+      </span>
+    </a>
+  <% }); %>
+</section>
+
+<% if (page.total > 1) { %>
+  <nav class="pagination">
+    <span>
+      <% if (page.prev) { %>
+        <a href="<%= url_for(page.prev_link) %>">&larr; <span data-i18n="pagination.newer"><%= __('pagination.newer') %></span></a>
+      <% } %>
+    </span>
+    <span>
+      <% if (page.next) { %>
+        <a href="<%= url_for(page.next_link) %>"><span data-i18n="pagination.older"><%= __('pagination.older') %></span> &rarr;</a>
+      <% } %>
+    </span>
+  </nav>
+<% } %>

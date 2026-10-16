@@ -1,0 +1,50 @@
+nav:
+  blog: Blog
+  archives: Archives
+  about: About
+  links: Links
+  categories: Categories
+  tags: Tags
+  menu: Menu
+
+pagination:
+  newer: Newer
+  older: Older
+
+archive:
+  posts_in: "Posts in %s"
+  tag: "Tag: %s"
+  category: "Category: %s"
+  post_count: "%s posts"
+
+meta:
+  views: views
+  edited: "Edited %s"
+  words: "%s words"
+  min: "%s min"
+
+toc: Contents
+related_posts: Related
+comments: Comments
+
+search:
+  placeholder: Search posts…
+  no_results: No results
+  esc: esc
+  close: Close search
+
+lang:
+  switch: Switch language
+
+links:
+  title: Links
+  intro: A short list of sites and people worth your time.
+
+not_found:
+  title: Page not found
+  text: The page you are looking for does not exist. Head back to the <a href="%s">home page</a>.
+
+footer:
+  license: "Except where otherwise noted, content on this site is licensed under a %s license."
+  author: "Created by %s"
+  powered: "Powered by %s & %s"
