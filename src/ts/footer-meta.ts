@@ -23,7 +23,8 @@ import type { HexoHelperContext, HexoLike, I18nField } from './types';
 declare const hexo: HexoLike;
 
 const HEXO_LINK = '<a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a>';
-const THEME_NAME = 'Noviluna';
+const THEME_LINK =
+  '<a href="https://github.com/dingyi222666/hexo-theme-noviluna" target="_blank" rel="noopener">Noviluna</a>';
 
 /**
  * `en` reads with a comma + space; `zh-CN` with a full-width comma, which is
@@ -53,7 +54,7 @@ export function composeLine(footer: FooterConfig, dict: FlatDict, lang: Lang): s
   const author = variant(footer.author, lang);
   if (author) segments.push(fill(dict['footer.author'], [author]));
 
-  if (footer.powered) segments.push(fill(dict['footer.powered'], [HEXO_LINK, THEME_NAME]));
+  if (footer.powered) segments.push(fill(dict['footer.powered'], [HEXO_LINK, THEME_LINK]));
 
   const icp = variant(footer.icp, lang);
   if (icp) segments.push(icp);

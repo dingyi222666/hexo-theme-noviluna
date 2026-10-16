@@ -20,7 +20,7 @@ const path_1 = require("path");
 const i18n_core_1 = require("./i18n-core");
 const lang_files_1 = require("./lang-files");
 const HEXO_LINK = '<a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a>';
-const THEME_NAME = 'Noviluna';
+const THEME_LINK = '<a href="https://github.com/dingyi222666/hexo-theme-noviluna" target="_blank" rel="noopener">Noviluna</a>';
 /**
  * `en` reads with a comma + space; `zh-CN` with a full-width comma, which is
  * what the language files already use inside their own sentences.
@@ -42,7 +42,7 @@ function composeLine(footer, dict, lang) {
     if (author)
         segments.push(fill(dict['footer.author'], [author]));
     if (footer.powered)
-        segments.push(fill(dict['footer.powered'], [HEXO_LINK, THEME_NAME]));
+        segments.push(fill(dict['footer.powered'], [HEXO_LINK, THEME_LINK]));
     const icp = (0, i18n_core_1.variant)(footer.icp, lang);
     if (icp)
         segments.push(icp);
