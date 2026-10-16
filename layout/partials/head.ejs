@@ -1,15 +1,55 @@
+<%
+  // The language the site itself is built in.
+  var siteLang = String(config.language || 'en').indexOf('zh') === 0 ? 'zh-CN' : 'en';
+  // Adapt the UI language to the browser unless the theme opts out.
+  var autoLang = theme.language_auto !== false;
+%>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <script>
     (function () {
+      var root = document.documentElement;
+
+      // --- colour scheme, before first paint ---
       var t;
       try { t = localStorage.getItem('theme'); } catch (e) {}
       if (t !== 'light' && t !== 'dark') {
         t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
-      document.documentElement.setAttribute('data-theme', t);
+      root.setAttribute('data-theme', t);
+
+      // --- UI language, also before first paint ---
+      // A stored choice wins; otherwise fall back to the browser language
+      // (when enabled) and finally to the language the site is built in.
+      // Resolving here means an auto-detected language never flashes the
+      // site language first: the page stays hidden until lang.js has
+      // swapped the strings.
+      var site = <%- JSON.stringify(siteLang) %>;
+      var pick = null;
+      try { pick = localStorage.getItem('lang'); } catch (e) {}
+      if (pick !== 'en' && pick !== 'zh-CN') {
+        pick = site;
+        <% if (autoLang) { %>
+        var list = (navigator.languages && navigator.languages.length)
+          ? navigator.languages : [navigator.language || ''];
+        for (var i = 0; i < list.length; i++) {
+          var s = String(list[i]).toLowerCase();
+          if (s.indexOf('zh') === 0) { pick = 'zh-CN'; break; }
+          if (s.indexOf('en') === 0) { pick = 'en'; break; }
+        }
+        <% } %>
+      }
+      root.setAttribute('lang', pick);
+      window.__NOVILUNA_LANG__ = pick;
+      if (pick !== site) {
+        root.className += ' i18n-pending';
+        // Safety net: never leave the page hidden if lang.js fails to load.
+        setTimeout(function () {
+          root.className = root.className.replace(/\s*i18n-pending/, '');
+        }, 1500);
+      }
     })();
   </script>
   <%
@@ -37,7 +77,7 @@
   <%- css('css/noviluna') %>
   <script>
     window.__NOVILUNA_LANGS__ = <%- JSON.stringify(i18nDump) %>;
-    window.__NOVILUNA_DEFAULT_LANG__ = <%- JSON.stringify(String(config.language || 'en').indexOf('zh') === 0 ? 'zh-CN' : 'en') %>;
+    window.__NOVILUNA_DEFAULT_LANG__ = <%- JSON.stringify(siteLang) %>;
     window.__NOVILUNA_I18N__ = {
       searchPlaceholder: <%- JSON.stringify(__('search.placeholder')) %>,
       noResults: <%- JSON.stringify(__('search.no_results')) %>,

@@ -75,6 +75,7 @@ marked:
 | `related_posts.*`   | `true` (max: `4`)   | 构建期基于 Tag 权重计算相关文章                                                          |
 | `search.enable`     | `true`              | 全屏本地搜索覆盖层                                                                       |
 | `language_switcher` | `true`              | 页脚客户端 UI 语言切换器（不翻译正文）                                                   |
+| `language_auto`     | `true`              | 访客未选择语言时，按其浏览器语言显示界面                                                  |
 | `comments.*`        | `false`             | Giscus 评论配置（未启用时不渲染任何 DOM）                                                |
 | `footer.*`          | —                   | 页脚 `author` / `icp` / `license` 等，支持传入多语言字典 `{ en: "...", "zh-CN": "..." }` |
 

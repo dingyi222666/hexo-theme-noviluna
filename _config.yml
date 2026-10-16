@@ -118,6 +118,11 @@ footer:
 # language of the site.
 language_switcher: true
 
+# Adapt the UI language to the visitor's browser when they have not chosen one.
+# Resolution order: stored choice → browser language → site language.
+# Set to false to always start in the site language.
+language_auto: true
+
 # Intro line on the /links/ page (bilingual).
 links_intro:
   en: "A short list of sites and people worth your time."

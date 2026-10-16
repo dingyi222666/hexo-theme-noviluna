@@ -1,12 +1,20 @@
 "use strict";
 /**
- * Language switcher — footer EN/中 toggle, popover, and client-side UI
- * translation. Loaded (after main.js) only when
+ * Language switcher — the footer EN/中 toggle, its popover, and all
+ * client-side UI translation. Loaded (after main.js) only when
  * `theme.language_switcher !== false`.
+ *
+ * The initial language is resolved by an inline script in head.ejs, before
+ * first paint: an explicit choice in localStorage wins, otherwise the browser
+ * language (when `theme.language_auto` is on, the default), otherwise the
+ * language the site is built in. head.ejs keeps the page hidden with
+ * `html.i18n-pending` while the two differ, so an auto-detected language
+ * never flashes the site language first.
  *
  * Everything it needs is prerendered into the page:
  *   window.__NOVILUNA_LANGS__        { en: {key: str}, 'zh-CN': {…} }
- *   window.__NOVILUNA_DEFAULT_LANG__ 'en' | 'zh-CN' (site language)
+ *   window.__NOVILUNA_DEFAULT_LANG__ the site language (server-rendered)
+ *   window.__NOVILUNA_LANG__         the resolved language
  *   window.__NOVILUNA_I18N__         { searchPlaceholder, noResults, searchUrl }
  * and the DOM carries the per-string bindings:
  *   [data-i18n]       plain key from languages/*.yml
@@ -15,12 +23,18 @@
  *   [data-args-en] / [data-args-zh]  per-language args for data-i18n-fmt
  *   [data-i18n-aria]  key for an aria-label
  *   [data-en] / [data-zh]  raw bilingual values (theme config maps)
+ *   [data-line-en] / [data-line-zh]  a whole pre-composed line
  */
 (() => {
     const doc = document;
     const root = doc.documentElement;
     const LANGS = window.__NOVILUNA_LANGS__ || {};
     const DEFAULT_LANG = window.__NOVILUNA_DEFAULT_LANG__ === 'zh-CN' ? 'zh-CN' : 'en';
+    // head.ejs already resolved the language before first paint —
+    // stored choice → browser language (when `language_auto`) → site language.
+    const RESOLVED_LANG = window.__NOVILUNA_LANG__ === 'zh-CN' ? 'zh-CN'
+        : window.__NOVILUNA_LANG__ === 'en' ? 'en'
+            : DEFAULT_LANG;
     const langBtn = doc.querySelector('.lang-toggle');
     const langPopover = doc.querySelector('.lang-popover');
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -30,7 +44,7 @@
             l = localStorage.getItem('lang');
         }
         catch (_e) { /* private mode */ }
-        return l === 'en' || l === 'zh-CN' ? l : DEFAULT_LANG;
+        return l === 'en' || l === 'zh-CN' ? l : RESOLVED_LANG;
     }
     function t(key) {
         const dict = LANGS[lang()] || {};
@@ -194,4 +208,7 @@
     }
     if (lang() !== DEFAULT_LANG)
         applyLang();
+    // Strings now match the resolved language (or never needed swapping) —
+    // release the early-paint guard installed by head.ejs.
+    root.classList.remove('i18n-pending');
 })();

@@ -75,6 +75,7 @@ Options live in `themes/noviluna/_config.yml`. The essentials below; see the def
 | `related_posts.*`   | `true` (max: `4`)   | Related posts scored by tag weight at build time                                                   |
 | `search.enable`     | `true`              | Full-screen local search overlay                                                                   |
 | `language_switcher` | `true`              | Client-side footer UI language switcher (does not translate post content)                          |
+| `language_auto`     | `true`              | Start in the visitor's browser language when they have not chosen one                              |
 | `comments.*`        | `false`             | Giscus comments (renders no DOM whatsoever when disabled)                                          |
 | `footer.*`          | —                   | Footer `author` / `icp` / `license` etc.; accepts a language map `{ en: "...", "zh-CN": "..." }`   |
 
