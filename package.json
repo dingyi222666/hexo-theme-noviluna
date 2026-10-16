@@ -33,7 +33,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.scripts.json && tsc -p tsconfig.client.json",
-    "watch": "tsc -p tsconfig.scripts.json --watch --preserveWatchOutput & tsc -p tsconfig.client.json --watch --preserveWatchOutput & wait"
+    "watch": "tsc -p tsconfig.scripts.json --watch --preserveWatchOutput & tsc -p tsconfig.client.json --watch --preserveWatchOutput & wait",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"
