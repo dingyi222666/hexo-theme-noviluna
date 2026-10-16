@@ -69,6 +69,7 @@ Options live in `themes/noviluna/_config.yml`. The essentials below; see the def
 | Field               | Default             | Description                                                                                        |
 | :------------------ | :------------------ | :------------------------------------------------------------------------------------------------- |
 | `accent`            | `#2563EB`           | Global accent colour, mapped to `var(--accent)`                                                    |
+| `favicon`           | —                   | Favicon path; falls back to the site's `favicon` key                                               |
 | `fonts.*`           | `true`              | Load the `geist` and `harmonyos` webfonts on demand                                                |
 | `meta.*`            | `true` / `false`    | Controls `updated`, `wordcount` (words / reading time) and `views` (busuanzi)                      |
 | `toc.*`             | `true` (depth: `3`) | Sticky right-hand TOC on viewports ≥1200px (collects h2–h3)                                        |

@@ -11,6 +11,9 @@
 # Accent colour — used sparingly. Available to the stylesheet as var(--accent).
 accent: "#2563EB"
 
+# Favicon. Falls back to the site's own `favicon` key in _config.yml.
+favicon: 
+
 # Show a one-line excerpt under each title on the index (hidden ≤640px).
 excerpt: true
 

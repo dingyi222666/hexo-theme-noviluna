@@ -61,6 +61,8 @@
   <title><%= title %></title>
   <% if (description) { %><meta name="description" content="<%= description %>"><% } %>
   <% if (config.author) { %><meta name="author" content="<%= config.author %>"><% } %>
+  <% var favicon = theme.favicon || config.favicon; %>
+  <% if (favicon) { %><link rel="icon" href="<%= url_for(favicon) %>"><% } %>
   <link rel="alternate" href="<%= url_for('/atom.xml') %>" type="application/atom+xml" title="<%= config.title %>">
   <% var fonts = theme.fonts || {}; %>
   <% if (fonts.geist !== false || fonts.harmonyos !== false) { %>
