@@ -48,3 +48,11 @@ footer:
   license: "本博客所有文章除特别声明外，均采用 %s 许可协议，转载请注明出处。"
   author: "本站由 %s 创建"
   powered: "由 %s 强力驱动，主题为 %s"
+
+# GitHub Alerts —— 默认标题,标记后写了自定义标题时不使用
+alert:
+  note: 注意
+  tip: 提示
+  important: 重要
+  warning: 警告
+  caution: 谨慎

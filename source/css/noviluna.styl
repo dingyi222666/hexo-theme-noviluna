@@ -27,6 +27,11 @@
   --hljs-title    #7820BC
   --hljs-variable #CB2A2F
   --mark-bg       rgba(255, 212, 0, 0.32)
+  --alert-note      #0969DA
+  --alert-tip       #1A7F37
+  --alert-important #8250DF
+  --alert-warning   #9A6700
+  --alert-caution   #CF222E
   color-scheme    light
 
   // type
@@ -96,6 +101,11 @@
   --hljs-title    #BF7AF0
   --hljs-variable #FF6166
   --mark-bg       rgba(255, 212, 0, 0.22)
+  --alert-note      #4493F8
+  --alert-tip       #3FB950
+  --alert-important #AB7DF8
+  --alert-warning   #D29922
+  --alert-caution   #F85149
 
 @media (prefers-color-scheme: dark)
   :root:not([data-theme="light"])
@@ -114,6 +124,11 @@
     --hljs-title    #BF7AF0
     --hljs-variable #FF6166
     --mark-bg       rgba(255, 212, 0, 0.22)
+    --alert-note      #4493F8
+    --alert-tip       #3FB950
+    --alert-important #AB7DF8
+    --alert-warning   #D29922
+    --alert-caution   #F85149
 
 // ---------------------------------------------------------------
 // §4.2 Base
@@ -427,18 +442,95 @@ img
     border-radius 3px
     padding 1px 5px
 
+  // GitHub Alerts — rendered natively by markdown-it-github-alerts
+  // (``> [!NOTE]`` and friends). Output markup matches GitHub's, including
+  // the octicon in the title, so the class names below are theirs.
+  .markdown-alert
+    --alert-color var(--fg-muted)
+    margin 0 0 var(--sp-6)
+    padding var(--sp-4) var(--sp-5)
+    border-left 3px solid var(--alert-color)
+    border-radius 0 var(--radius) var(--radius) 0
+    background s('color-mix(in srgb, %s 6%%, transparent)', var(--alert-color))
+
+    .markdown-alert-title
+      display flex
+      align-items center
+      gap var(--sp-2)
+      margin 0 0 var(--sp-2)
+      font-size var(--text-sm)
+      font-weight 600
+      line-height 1.4
+      color var(--alert-color)
+
+      svg
+        flex none
+        width 16px
+        height 16px
+        fill currentColor
+
+    > :last-child
+      margin-bottom 0
+
+  .markdown-alert-note
+    --alert-color var(--alert-note)
+
+  .markdown-alert-tip
+    --alert-color var(--alert-tip)
+
+  .markdown-alert-important
+    --alert-color var(--alert-important)
+
+  .markdown-alert-warning
+    --alert-color var(--alert-warning)
+
+  .markdown-alert-caution
+    --alert-color var(--alert-caution)
+
+  // Folding — plain GFM <details> markup
   details
     margin 0 0 var(--sp-6)
-    padding-left var(--sp-5)
-    border-left 2px solid var(--border-strong)
+    padding var(--sp-3) var(--sp-4)
+    border 1px solid var(--border)
+    border-radius var(--radius)
 
     summary
+      margin calc(var(--sp-3) * -1) calc(var(--sp-4) * -1)
+      padding var(--sp-3) var(--sp-4)
       font-weight 500
       cursor pointer
-      margin-left calc(var(--sp-5) * -1)
 
-      + *
-        margin-top var(--sp-3)
+    &[open] summary
+      margin-bottom var(--sp-4)
+      border-bottom 1px solid var(--border)
+
+    > :last-child
+      margin-bottom 0
+
+  // Footnotes — markdown-it-footnote
+  .footnotes-sep
+    margin var(--sp-12) 0 var(--sp-6)
+    border 0
+    border-top 1px solid var(--border)
+
+  .footnotes
+    font-size var(--text-sm)
+    color var(--fg-muted)
+
+    .footnotes-list
+      padding-left var(--sp-6)
+
+    .footnote-item
+      margin-bottom var(--sp-2)
+
+      p
+        margin 0
+
+    .footnote-ref a
+      text-decoration none
+
+    .footnote-backref
+      text-decoration none
 
   table
     width 100%

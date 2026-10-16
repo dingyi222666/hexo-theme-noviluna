@@ -48,3 +48,11 @@ footer:
   license: "Except where otherwise noted, content on this site is licensed under a %s license."
   author: "Created by %s"
   powered: "Powered by %s & %s"
+
+# GitHub Alerts — default titles, used when the marker has no custom title.
+alert:
+  note: Note
+  tip: Tip
+  important: Important
+  warning: Warning
+  caution: Caution

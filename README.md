@@ -16,6 +16,7 @@ English | [简体中文](README.zh-CN.md)
 
 - **Typography**: a 720px prose column (17px/1.625) set in Geist / Geist Mono with HarmonyOS Sans SC.
 - **Colour system**: CSS-token-driven palettes, low-contrast syntax highlighting, and adaptive `prefers-color-scheme`.
+- **GFM**: GitHub alerts (`> [!NOTE]`), folding, footnotes and task lists.
 - **Pure and light**: zero third-party CSS/JS runtime dependencies — all client interaction (search, TOC highlighting, theme and language switching) is ~170 lines of vanilla JS.
 - **Works out of the box**: full-keyboard local search over a generated `search.json`, build-time same-tag related posts, lazy-loaded Giscus comments that follow the theme, and reload-free client-side bilingual UI switching (`zh-CN` / `en`).
 
@@ -79,6 +80,40 @@ Options live in `themes/noviluna/_config.yml`. The essentials below; see the def
 | `language_auto`     | `true`              | Start in the visitor's browser language when they have not chosen one                              |
 | `comments.*`        | `false`             | Giscus comments (renders no DOM whatsoever when disabled)                                          |
 | `footer.*`          | —                   | Footer `author` / `icp` / `license` etc.; accepts a language map `{ en: "...", "zh-CN": "..." }`   |
+
+## Markdown & GFM
+
+The theme styles the latest GitHub-flavoured Markdown. Install the markdown-it renderer — and remove the default one, since Hexo picks a renderer per file extension:
+
+```bash
+npm uninstall hexo-renderer-marked
+npm install hexo-renderer-markdown-it \
+  markdown-it-github-alerts markdown-it-footnote markdown-it-task-lists
+```
+
+```yaml
+# site _config.yml
+markdown:
+  render:
+    html: true        # let raw HTML through — <details> folding depends on it
+  anchors:
+    level: 2          # heading ids from h2 up — required by the TOC rail
+  plugins:
+    # markdown-it-github-alerts is ESM-only and cannot be listed here;
+    # the theme bridges it through a `markdown-it:renderer` filter.
+    - markdown-it-footnote
+    - markdown-it-task-lists
+```
+
+| Syntax | Renders as |
+| :--- | :--- |
+| `> [!NOTE]` · `[!TIP]` · `[!IMPORTANT]` · `[!WARNING]` · `[!CAUTION]` | GitHub alerts — octicon + colour per type; add a title to override the default |
+| `<details><summary>…</summary>` | native collapsible block |
+| `[^1]` | footnotes |
+| `- [ ]` / `- [x]` | task lists |
+| tables, strikethrough, autolinks | the GFM baseline |
+
+Without the markdown-it renderer everything else still works — alerts simply stay ordinary blockquotes.
 
 ## Pages & Front-matter
 

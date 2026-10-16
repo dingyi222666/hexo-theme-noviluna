@@ -78,10 +78,15 @@ export interface HexoHelperContext {
 /** The small slice of the Hexo runtime that theme scripts use. */
 export interface HexoLike {
   theme_dir: string;
+  config: ConfigLike;
   extend: {
     helper: {
       /** `fn` is invoked with the render context as `this`. */
       register(name: string, fn: (this: HexoHelperContext, ...args: any[]) => unknown): void;
+    };
+    filter: {
+      /** Lower priority runs earlier; the built-ins sit at 10. */
+      register(type: string, fn: (...args: any[]) => unknown, priority?: number): void;
     };
   };
 }
