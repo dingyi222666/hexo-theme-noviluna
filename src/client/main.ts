@@ -64,33 +64,51 @@
   const tocRail = doc.querySelector<HTMLElement>('.toc-rail');
   if (tocRail) {
     const links = Array.from(tocRail.querySelectorAll<HTMLAnchorElement>('a'));
-    const headings = links.map((a) =>
-      doc.getElementById(decodeURIComponent((a.getAttribute('href') as string).slice(1))));
+    // The href is percent-encoded (CJK titles, spaces), so decode it once and
+    // compare against the decoded heading id. Comparing the raw href with
+    // `'#' + id` silently fails for every non-ASCII heading — the highlight
+    // never appeared on a Chinese post.
+    const ids = links.map((a) =>
+      decodeURIComponent((a.getAttribute('href') as string).slice(1)));
+    const headings = ids.map((id) => doc.getElementById(id));
     let current: string | null = null;
+
     const activate = (id: string): void => {
       if (current === id) return;
       current = id;
-      links.forEach((a) => {
-        a.classList.toggle('is-active', a.getAttribute('href') === '#' + id);
+      links.forEach((a, i) => {
+        a.classList.toggle('is-active', ids[i] === id);
       });
     };
-    let visible: number[] = [];
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        const i = headings.indexOf(en.target as HTMLElement);
-        if (en.isIntersecting) { if (visible.indexOf(i) === -1) visible.push(i); }
-        else { visible = visible.filter((v) => v !== i); }
-      });
-      if (visible.length) {
-        const top = headings[Math.min.apply(null, visible)];
-        if (top) activate(top.id);
+
+    // Highlight the last heading that has scrolled past the header. Steadier
+    // than an IntersectionObserver band: there is always exactly one active
+    // entry, however long the sections are.
+    const HEADER_OFFSET = 96;
+    const updateActive = (): void => {
+      let index = 0;
+      for (let i = 0; i < headings.length; i += 1) {
+        const heading = headings[i];
+        if (heading && heading.getBoundingClientRect().top <= HEADER_OFFSET) index = i;
       }
-    }, { rootMargin: '-64px 0px -70% 0px' });
-    headings.forEach((h) => { if (h) io.observe(h); });
-    // fade the rail in once the observer is attached
+      if (ids[index]) activate(ids[index]);
+    };
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        updateActive();
+      });
+    }, { passive: true });
+
+    updateActive();
     requestAnimationFrame(() => {
       tocRail.querySelector('.toc-rail-inner')?.classList.add('is-ready');
     });
+
     tocRail.addEventListener('click', (e) => {
       const a = (e.target as Element | null)?.closest<HTMLAnchorElement>('a');
       if (!a) return;
