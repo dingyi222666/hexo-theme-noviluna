@@ -1,252 +1,121 @@
 # Noviluna
 
-> A quiet, typographic Hexo theme — one column, hairlines, and nothing else.
+> A dependency-free, typography-first minimal Hexo theme. One centred column, hairline dividers, no decorative noise.
 
-**English** · [简体中文](README.zh-CN.md)
+English | [简体中文](README.zh-CN.md)
 
-![Index](screenshots/index-light.webp)
-
-Noviluna is built around a single idea: the page should disappear behind the
-words. There is one centred column, a restrained type scale, hairline separators
-instead of cards and shadows, and no decoration that does not carry meaning.
-
-| Article with table of contents | Dark mode |
-| --- | --- |
-| ![Article](screenshots/post-toc-light.webp) | ![Dark](screenshots/post-toc-dark.webp) |
+<p align="center">
+  <img src="screenshots/index-light.webp" width="100%" alt="Index Light">
+</p>
+<p align="center">
+  <img src="screenshots/post-toc-light.webp" width="49%" alt="Post Light">
+  <img src="screenshots/post-toc-dark.webp" width="49%" alt="Post Dark">
+</p>
 
 ## Features
 
-- **One narrow column** — 720px prose, fluid headings, 17px/1.625 body text
-- **Light & dark** — token-driven palettes, `prefers-color-scheme` aware, no flash on load
-- **Table of contents** — sticky right rail with scrollspy, ≥1200px viewports
-- **Local search** — full-screen overlay over a static `search.json`, keyboard driven
-- **i18n** — English and Simplified Chinese built in, plus a client-side UI language switcher
-- **Typography first** — Geist / Geist Mono, with HarmonyOS Sans SC for CJK
-- **Syntax highlighting** — a low-contrast palette derived from the theme tokens
-- **Categories, tags, archives** — hairline index pages with post counts
-- **Reading meta** — word count, reading time, last-edited date
-- **Related posts** — same-tag scoring at build time, no plugin
-- **Wide layout** — per-post `wide: true` for tables and long code blocks
-- **Comments** — giscus, lazy-loaded and theme-aware; off by default
-- **Links page** — a friends/links page driven by a data file
-- **Configurable footer** — licence, author, powered-by and ICP lines, all optional
-- **No framework** — no CSS or JS dependencies; ~170 lines of vanilla JS
+- **Typography**: a 720px prose column (17px/1.625) set in Geist / Geist Mono with HarmonyOS Sans SC.
+- **Colour system**: CSS-token-driven palettes, low-contrast syntax highlighting, and adaptive `prefers-color-scheme`.
+- **Pure and light**: zero third-party CSS/JS runtime dependencies — all client interaction (search, TOC highlighting, theme and language switching) is ~170 lines of vanilla JS.
+- **Works out of the box**: full-keyboard local search over a generated `search.json`, build-time same-tag related posts, lazy-loaded Giscus comments that follow the theme, and reload-free client-side bilingual UI switching (`zh-CN` / `en`).
 
-## Requirements
+## Installation & Dependencies
 
-- Hexo 5 or newer (developed against Hexo 8)
-- Node.js 18+
-
-## Installation
-
-### Git
+Requirements: **Node.js >= 18**, **Hexo >= 5** (developed against Hexo 8).
 
 ```bash
-cd your-blog
+# 1. Install the theme (Git or npm — pick one)
 git clone https://github.com/dingyi222666/hexo-theme-noviluna.git themes/noviluna
-```
+# or: npm install hexo-theme-noviluna
 
-### npm
-
-```bash
-cd your-blog
-npm install hexo-theme-noviluna
-```
-
-Then enable it in your site `_config.yml`:
-
-```yaml
-theme: noviluna
-```
-
-> Using npm? Hexo resolves `theme: noviluna` from `node_modules`, so either keep
-> the package name and point `theme:` at it, or symlink it into `themes/`.
-
-### Required plugins
-
-Hexo 8 no longer ships the index, archive, tag and category generators, and the
-theme expects a search index and a feed. Install them in your site:
-
-```bash
+# 2. Install the required generator plugins (Hexo 8+ strips the base generators)
 npm install hexo-generator-index hexo-generator-archive \
   hexo-generator-tag hexo-generator-category \
   hexo-generator-search hexo-generator-feed
 ```
 
-And add the matching blocks to your **site** `_config.yml`:
+## Site Configuration
+
+Enable the theme and configure the plugin pipeline in your site's root `_config.yml`:
 
 ```yaml
-# required — index / archive / tag / category pages
+theme: noviluna
+language: zh-CN
+
 index_generator:
-  path: ''
+  path: ""
   per_page: 10
 
-# required — the search overlay reads this index
 search:
   path: search.json
   field: post
   content: true
 
-# required — the footer RSS link points here
 feed:
   type: atom
   path: atom.xml
   limit: 20
   content: true
 
-# recommended — heading ids are required by the table of contents
 marked:
   gfm: true
-  headerIds: true
+  headerIds: true # required: anchors for the TOC rail
 ```
 
-## Configuration
+## Theme Configuration
 
-All theme options live in `themes/noviluna/_config.yml`, and every one of them
-is optional. The most useful ones:
+Options live in `themes/noviluna/_config.yml`. The essentials below; see the default config file for the full list.
 
-| Key | Default | What it does |
-| --- | --- | --- |
-| `accent` | `#2563EB` | Accent colour, exposed to the stylesheet as `var(--accent)` |
-| `excerpt` | `true` | One-line excerpt under each index entry |
-| `nav` | Blog / Archives / Tags / Categories / About / Links | Header navigation |
-| `fonts.geist` | `true` | Load Geist + Geist Mono |
-| `fonts.harmonyos` | `true` | Load HarmonyOS Sans SC for CJK text |
-| `meta.updated` | `true` | Show "Edited …" when a post was updated |
-| `meta.wordcount` | `true` | Show word count and reading time |
-| `meta.views` | `false` | Show busuanzi page views |
-| `toc.enable` | `true` | Table of contents rail |
-| `toc.max_depth` | `3` | Deepest heading level included (h2–h3) |
-| `related_posts.enable` | `true` | Related posts section |
-| `related_posts.max` | `4` | How many related posts to show |
-| `comments.enable` | `false` | giscus comments |
-| `busuanzi.enable` | `false` | Page-view counter |
-| `search.enable` | `true` | Local search overlay |
-| `footer.*` | — | Licence / author / powered-by / ICP lines |
-| `language_switcher` | `true` | Client-side EN/中 UI switch |
-| `links_intro` | — | Intro line on the links page |
+| Field               | Default             | Description                                                                                        |
+| :------------------ | :------------------ | :------------------------------------------------------------------------------------------------- |
+| `accent`            | `#2563EB`           | Global accent colour, mapped to `var(--accent)`                                                    |
+| `fonts.*`           | `true`              | Load the `geist` and `harmonyos` webfonts on demand                                                |
+| `meta.*`            | `true` / `false`    | Controls `updated`, `wordcount` (words / reading time) and `views` (busuanzi)                      |
+| `toc.*`             | `true` (depth: `3`) | Sticky right-hand TOC on viewports ≥1200px (collects h2–h3)                                        |
+| `related_posts.*`   | `true` (max: `4`)   | Related posts scored by tag weight at build time                                                   |
+| `search.enable`     | `true`              | Full-screen local search overlay                                                                   |
+| `language_switcher` | `true`              | Client-side footer UI language switcher (does not translate post content)                          |
+| `comments.*`        | `false`             | Giscus comments (renders no DOM whatsoever when disabled)                                          |
+| `footer.*`          | —                   | Footer `author` / `icp` / `license` etc.; accepts a language map `{ en: "...", "zh-CN": "..." }`   |
 
-Several fields accept **either** a plain string **or** per-language variants:
+## Pages & Front-matter
 
-```yaml
-footer:
-  author: "@yourname"
-  # or
-  author:
-    en: "@yourname"
-    "zh-CN": "@你的名字"
-  icp:
-    en: ""                      # hidden in English
-    "zh-CN": "京ICP备00000000号"
-```
-
-## Front matter
+**Extra post front-matter fields:**
 
 ```yaml
 ---
-title: A post
+title: Post Title
 date: 2026-10-16
-tags: [design, typography]
-categories: [Notes]
-wide: true        # widen the article to 980px (tables, long code); hides the TOC
-toc: false        # no table of contents for this post
-comments: false   # no comments for this post
-related: false    # no related posts for this post
+wide: true # widen the container to 980px (wide tables / code blocks), drops the TOC
+toc: false # disable the TOC for this post
+comments: false # disable comments for this post
+related: false # disable related posts for this post
 ---
 ```
 
-## Extra pages
+**Standalone route pages:**
 
-Create these files in your site's `source/` directory:
+Create the matching Markdown file under your site's `source/` directory to activate a built-in layout:
 
-```markdown
-<!-- source/tags/index.md -->
----
-title: Tags
-layout: tags
----
-```
+- **Tags** (`source/tags/index.md`): `layout: tags`
+- **Categories** (`source/categories/index.md`): `layout: categories`
+- **Links** (`source/links/index.md`): `layout: page` with `links: true` (data comes from `source/_data/links.yml`, shaped `[{ name, url, desc }]`)
 
-```markdown
-<!-- source/categories/index.md -->
----
-title: Categories
-layout: categories
----
-```
+## Build & Development
 
-```markdown
-<!-- source/links/index.md -->
----
-title: Links
-layout: page
-links: true
----
-```
+Core logic is written in TypeScript; EJS is only a thin view shell calling typed helpers.
 
-The links page is populated from `source/_data/links.yml`:
-
-```yaml
-- name: Example Blog
-  url: https://example.com
-  desc: Quiet writing about design and code.
-```
-
-## Internationalisation
-
-UI strings live in `themes/noviluna/languages/en.yml` and `zh-CN.yml`. Set the
-site language in your `_config.yml`:
-
-```yaml
-language: zh-CN
-```
-
-The optional footer switch changes all interface strings and date formats
-client-side, without a reload. It does **not** translate post content — a static
-site is built in one content language. Set `language_switcher: false` to hide it.
-
-## Comments
-
-giscus is wired up but stays completely inert until it is configured. Install
-the [giscus app](https://github.com/apps/giscus) on a public repository with
-Discussions enabled, then fill in the values from https://giscus.app:
-
-```yaml
-comments:
-  enable: true
-  giscus:
-    repo: "yourname/yourrepo"
-    repo_id: "R_kgDO…"
-    category: "Announcements"
-    category_id: "DIC_kwDO…"
-```
-
-## Development
-
-The theme's logic is written in TypeScript and compiled into the committed
-`scripts/` (build-time helpers) and `source/js/` (client) directories. Templates
-stay as EJS — hexo's layout pipeline renders `themes/*/layout/*` itself, and no
-maintained renderer exposes that pipeline to JSX — so the `.ejs` files are thin
-shells that call the typed helpers.
+- `src/ts/` → `scripts/*.js` (build-time Hexo helpers & generators)
+- `src/client/` → `source/js/*.js` (browser-side vanilla scripts)
+- `source/css/noviluna.styl` (stylesheet)
 
 ```bash
-npm install          # typescript, @types/node, js-yaml types
-npm run build        # compile src/ts → scripts/ and src/client → source/js
-npm run watch        # recompile on change while `hexo server` runs elsewhere
+npm install
+npm run build # compile TS into scripts/ and source/js/
+npm run watch # incremental watch build
 ```
 
-Source of truth:
-
-```
-src/ts/        build-time helpers  → scripts/*.js
-src/client/    browser code        → source/js/*.js
-layout/        EJS templates
-source/css/    noviluna.styl
-languages/     en.yml, zh-CN.yml
-```
-
-After changing anything under `src/`, run `npm run build` and commit both the
-source and the compiled output.
+> Run `npm run build` and commit the compiled output before opening a PR.
 
 ## License
 
