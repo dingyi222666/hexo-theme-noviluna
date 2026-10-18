@@ -1315,8 +1315,12 @@ img
   animation none
   mix-blend-mode normal
 
+// Ease-in-out at 620ms: slow off the mark, quick through the middle, soft
+// landing — the expansion stays visible the whole way instead of finishing
+// in the first 150ms. Only the incoming layer animates; dimming the old one
+// greyed the edge.
 ::view-transition-new(root)
-  animation 420ms cubic-bezier(.4, 0, .2, 1) both nv-reveal
+  animation 620ms cubic-bezier(.45, 0, .15, 1) both nv-reveal
 
 @keyframes nv-reveal
   from
