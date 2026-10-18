@@ -1,6 +1,6 @@
 {
   "name": "hexo-theme-noviluna",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A quiet, typographic Hexo theme — one column, hairlines, and nothing else.",
   "keywords": [
     "hexo",
@@ -32,7 +32,7 @@
     "tsconfig.client.json"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.scripts.json && tsc -p tsconfig.client.json",
+    "build": "find scripts source/js -name '*.js' -delete && tsc -p tsconfig.scripts.json && tsc -p tsconfig.client.json",
     "watch": "tsc -p tsconfig.scripts.json --watch --preserveWatchOutput & tsc -p tsconfig.client.json --watch --preserveWatchOutput & wait",
     "prepublishOnly": "npm run build"
   },

@@ -1,203 +1,126 @@
-/**
- * Language switcher — the footer EN/中 toggle, its popover, and all
- * client-side UI translation. Loaded (after main.js) only when
- * `theme.language_switcher !== false`.
- *
- * The initial language is resolved by an inline script in head.ejs, before
- * first paint: an explicit choice in localStorage wins, otherwise the browser
- * language (when `theme.language_auto` is on, the default), otherwise the
- * language the site is built in. head.ejs keeps the page hidden with
- * `html.i18n-pending` while the two differ, so an auto-detected language
- * never flashes the site language first.
- *
- * Everything it needs is prerendered into the page:
- *   window.__NOVILUNA_LANGS__        { en: {key: str}, 'zh-CN': {…} }
- *   window.__NOVILUNA_DEFAULT_LANG__ the site language (server-rendered)
- *   window.__NOVILUNA_LANG__         the resolved language
- *   window.__NOVILUNA_I18N__         { searchPlaceholder, noResults, searchUrl }
- * and the DOM carries the per-string bindings:
- *   [data-i18n]       plain key from languages/*.yml
- *   [data-i18n-fmt]   key with %s placeholders + args (see below)
- *   [data-i18n-args]  [args] as encodeURIComponent(JSON.stringify(…))
- *   [data-args-en] / [data-args-zh]  per-language args for data-i18n-fmt
- *   [data-i18n-aria]  key for an aria-label
- *   [data-en] / [data-zh]  raw bilingual values (theme config maps)
- *   [data-line-en] / [data-line-zh]  a whole pre-composed line
- */
+// Client-side UI translation: the footer EN/中 switcher and every string it swaps.
+// The initial language is resolved in head.ejs before first paint.
+type Lang = 'en' | 'zh-CN';
 
 (() => {
-  type Lang = 'en' | 'zh-CN';
-
   const doc = document;
   const root = doc.documentElement;
-  const LANGS: Record<string, Record<string, string>> = window.__NOVILUNA_LANGS__ || {};
-  const DEFAULT_LANG: Lang = window.__NOVILUNA_DEFAULT_LANG__ === 'zh-CN' ? 'zh-CN' : 'en';
-  // head.ejs already resolved the language before first paint —
-  // stored choice → browser language (when `language_auto`) → site language.
-  const RESOLVED_LANG: Lang =
-    window.__NOVILUNA_LANG__ === 'zh-CN' ? 'zh-CN'
-      : window.__NOVILUNA_LANG__ === 'en' ? 'en'
-        : DEFAULT_LANG;
-  const langBtn = doc.querySelector<HTMLElement>('.lang-toggle');
-  const langPopover = doc.querySelector<HTMLElement>('.lang-popover');
-  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dicts: Record<string, Record<string, string>> = window.__NOVILUNA_LANGS__ || {};
+  const SITE: Lang = window.__NOVILUNA_DEFAULT_LANG__ === 'zh-CN' ? 'zh-CN' : 'en';
+  const PICKED: Lang = window.__NOVILUNA_LANG__ === 'zh-CN' || window.__NOVILUNA_LANG__ === 'en'
+    ? (window.__NOVILUNA_LANG__ as Lang)
+    : SITE;
+  const MONTHS = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
+  const btn = doc.querySelector<HTMLElement>('.lang-toggle');
+  const pop = doc.querySelector<HTMLElement>('.lang-popover');
 
-  function lang(): Lang {
-    let l: string | null = null;
-    try { l = localStorage.getItem('lang'); } catch (_e) { /* private mode */ }
-    return l === 'en' || l === 'zh-CN' ? l : RESOLVED_LANG;
-  }
-
-  function t(key: string): string {
-    const dict = LANGS[lang()] || {};
-    return dict[key] != null ? dict[key] : key;
-  }
-
-  function fmt(key: string, args?: Array<string | number>): string {
-    let s = t(key);
-    (args || []).forEach((a) => { s = s.replace('%s', String(a)); });
-    return s;
-  }
-
-  /** Locale-aware date, mirroring the build-time `post_date` helper in
-   *  src/ts/wordcount.ts so prerendered and swapped dates agree. */
-  function fmtDate(iso: string): string {
+  const lang = (): Lang => {
+    let v: string | null = null;
+    try { v = localStorage.getItem('lang'); } catch { /* private mode */ }
+    return v === 'en' || v === 'zh-CN' ? v : PICKED;
+  };
+  const t = (k: string): string => dicts[lang()]?.[k] ?? k;
+  const fmt = (k: string, args: Array<string | number> = []): string =>
+    args.reduce<string>((s, a) => s.replace('%s', String(a)), t(k));
+  const fmtDate = (iso: string): string => {
     const d = new Date(iso);
     return lang() === 'zh-CN'
-      ? d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日'
-      : MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
-  }
+      ? `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
+      : `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  };
+  const parse = (raw: string | null, fallback: unknown): any => {
+    try { return JSON.parse(decodeURIComponent(raw || '')); } catch { return fallback; }
+  };
+  const each = <T extends Element>(sel: string, fn: (el: T) => void) =>
+    doc.querySelectorAll<T>(sel).forEach(fn);
 
-  function argsFor(el: Element): string[] {
-    let raw = lang() === 'zh-CN' ? el.getAttribute('data-args-zh') : el.getAttribute('data-args-en');
-    if (raw == null) raw = el.getAttribute('data-i18n-args') || el.getAttribute('data-args') || '[]';
-    try {
-      return JSON.parse(decodeURIComponent(raw)) as string[];
-    } catch (_e) {
-      return [];
-    }
-  }
+  function apply(): void {
+    const zh = lang() === 'zh-CN';
+    root.setAttribute('lang', zh ? 'zh-CN' : 'en');
+    const pick = (el: Element, en: string, zhv: string) => el.getAttribute(zh ? zhv : en);
 
-  function applyLang(): void {
-    const isZh = lang() === 'zh-CN';
-    root.setAttribute('lang', isZh ? 'zh-CN' : 'en');
-
-    // sentences rebuilt from a languages/*.yml key + args
-    doc.querySelectorAll<HTMLElement>('[data-i18n-fmt]').forEach((el) => {
-      const isMap = el.hasAttribute('data-args-en') || el.hasAttribute('data-args-zh');
-      let first = '';
-      if (isMap) {
-        const own = el.getAttribute(isZh ? 'data-args-zh' : 'data-args-en');
-        try {
-          first = String(JSON.parse(decodeURIComponent(own == null ? '[""]' : own))[0]);
-        } catch (_e) { first = ''; }
-      }
-      el.innerHTML = fmt(el.getAttribute('data-i18n-fmt') as string, argsFor(el));
-      // a language with no value (e.g. `author: { en: "", "zh-CN": "@n" }`) hides
-      el.hidden = isMap && first === '';
-    });
-
-    // plain strings from languages/*.yml
-    doc.querySelectorAll<HTMLElement>('[data-i18n]').forEach((el) => {
+    each<HTMLElement>('[data-i18n]', (el) => {
       el.textContent = t(el.getAttribute('data-i18n') as string);
     });
-
-    // accessibility strings
-    doc.querySelectorAll<HTMLElement>('[data-i18n-aria]').forEach((el) => {
+    each<HTMLElement>('[data-i18n-aria]', (el) => {
       el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria') as string));
     });
 
-    // bilingual raw values carried on the element itself: swap, and hide when
-    // this language has no variant (e.g. `icp: { en: "" }`).
-    doc.querySelectorAll<HTMLElement>('[data-en][data-zh]').forEach((el) => {
-      const v = el.getAttribute(isZh ? 'data-zh' : 'data-en') || '';
+    each<HTMLElement>('[data-i18n-fmt]', (el) => {
+      const mapped = el.hasAttribute('data-args-en') || el.hasAttribute('data-args-zh');
+      const raw = pick(el, 'data-args-zh', 'data-args-en')!;
+      const args = parse(raw ?? el.getAttribute('data-i18n-args'), []) as string[];
+      el.innerHTML = fmt(el.getAttribute('data-i18n-fmt') as string, args);
+      if (mapped) el.hidden = !args[0]; // '' in this language = hide the line
+    });
+
+    each<HTMLElement>('[data-en][data-zh]', (el) => {
+      const v = pick(el, 'data-en', 'data-zh') || '';
       if (el.hasAttribute('data-i18n-fmt')) el.innerHTML = v;
-      else if (!el.hasAttribute('data-i18n')) el.textContent = v;
+      else el.textContent = v;
       el.hidden = v === '';
     });
 
-    // joined footer meta line (author · powered · ICP): the whole line is
-    // composed at build time per language, so swap its content wholesale.
-    doc.querySelectorAll<HTMLElement>('[data-line-en][data-line-zh]').forEach((el) => {
-      const raw = el.getAttribute(isZh ? 'data-line-zh' : 'data-line-en') || '';
-      let html = '';
-      try { html = decodeURIComponent(raw); } catch (_e) { html = raw; }
+    each<HTMLElement>('[data-line-en][data-line-zh]', (el) => {
+      const html = decodeURIComponent(pick(el, 'data-line-en', 'data-line-zh') || '');
       el.innerHTML = html;
       el.hidden = html === '';
     });
 
-    // post header extras line: rebuild from embedded raw values
-    const ex = doc.querySelector<HTMLElement>('.article-extras[data-extras]');
-    if (ex) {
-      let raw: { words?: number; min?: number; updated?: string } | null = null;
-      try {
-        raw = JSON.parse(decodeURIComponent(ex.getAttribute('data-extras') as string));
-      } catch (_e) { raw = null; }
+    const extras = doc.querySelector<HTMLElement>('.article-extras[data-extras]');
+    if (extras) {
+      const raw = parse(extras.getAttribute('data-extras'), null) as
+        | { words?: number; min?: number; updated?: string } | null;
       if (raw) {
         const parts: string[] = [];
-        if (raw.words) {
-          parts.push(fmt('meta.words', [raw.words.toLocaleString('en-US')]));
-          parts.push(fmt('meta.min', [raw.min as number]));
-        }
+        if (raw.words) parts.push(fmt('meta.words', [raw.words.toLocaleString('en-US')]), fmt('meta.min', [raw.min as number]));
         if (raw.updated) parts.push(fmt('meta.edited', [fmtDate(raw.updated)]));
-        let html = parts.join(' · ');
-        const pv = ex.querySelector('#busuanzi_container_page_pv');
-        if (pv) html += (parts.length ? ' · ' : '') + pv.outerHTML;
-        ex.innerHTML = html;
+        const pv = extras.querySelector('#busuanzi_container_page_pv');
+        extras.innerHTML = parts.join(' · ') + (pv ? (parts.length ? ' · ' : '') + pv.outerHTML : '');
       }
     }
 
-    // post/article dates
-    doc.querySelectorAll<HTMLTimeElement>('time[datetime]').forEach((el) => {
+    each<HTMLTimeElement>('time[datetime]', (el) => {
       const iso = el.getAttribute('datetime');
-      if (!iso) return;
-      el.textContent = fmtDate(iso);
+      if (iso) el.textContent = fmtDate(iso);
     });
 
-    // search overlay strings (main.js reads them at search time)
     const input = doc.querySelector<HTMLInputElement>('.search-input');
     if (input) input.placeholder = t('search.placeholder');
-    // the close button's label is handled by the generic [data-i18n-aria] pass
-    const sbtn = doc.querySelector<HTMLElement>('.search-toggle');
-    if (sbtn) sbtn.setAttribute('aria-label', t('search.placeholder'));
+    doc.querySelector('.search-toggle')?.setAttribute('aria-label', t('search.placeholder'));
     const env = window.__NOVILUNA_I18N__;
     if (env) {
       env.searchPlaceholder = t('search.placeholder');
       env.noResults = t('search.no_results');
     }
 
-    if (langBtn) langBtn.textContent = isZh ? '中/EN' : 'EN/中';
-    if (langPopover) {
-      langPopover.querySelectorAll<HTMLElement>('button[data-lang]').forEach((b) => {
-        b.classList.toggle('is-active', b.getAttribute('data-lang') === lang());
-      });
-    }
+    if (btn) btn.textContent = zh ? '中/EN' : 'EN/中';
+    pop?.querySelectorAll<HTMLElement>('button[data-lang]').forEach((b) => {
+      b.classList.toggle('is-active', b.getAttribute('data-lang') === lang());
+    });
   }
 
-  if (langBtn && langPopover) {
-    const popover = langPopover;
-    const closePopover = (): void => { popover.hidden = true; };
-    langBtn.addEventListener('click', (e) => {
+  if (btn && pop) {
+    const hide = () => { pop.hidden = true; };
+    btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      popover.hidden = !popover.hidden;
+      pop.hidden = !pop.hidden;
     });
-    popover.addEventListener('click', (e) => {
+    pop.addEventListener('click', (e) => {
       const b = (e.target as Element | null)?.closest<HTMLElement>('button[data-lang]');
       if (!b) return;
-      try { localStorage.setItem('lang', b.getAttribute('data-lang') as string); } catch (_e) { /* ignore */ }
-      applyLang();
-      closePopover();
+      try { localStorage.setItem('lang', b.getAttribute('data-lang') as string); } catch { /* ignore */ }
+      apply();
+      hide();
     });
     doc.addEventListener('click', (e) => {
-      if (!popover.hidden && !(e.target as Element | null)?.closest('.lang-switch')) closePopover();
+      if (!pop.hidden && !(e.target as Element | null)?.closest('.lang-switch')) hide();
     });
     doc.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !popover.hidden) closePopover();
+      if (e.key === 'Escape' && !pop.hidden) hide();
     });
   }
 
-  if (lang() !== DEFAULT_LANG) applyLang();
-  // Strings now match the resolved language (or never needed swapping) —
-  // release the early-paint guard installed by head.ejs.
+  if (lang() !== SITE) apply();
   root.classList.remove('i18n-pending');
 })();
