@@ -76,7 +76,7 @@
   <% if (fonts.harmonyos !== false) { %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/harmonyos-sans-webfont-splitted@1.2.1/dist/HarmonyOS_Sans_SC/index.css">
   <% } %>
-  <%- css('css/noviluna') %>
+  <link rel="stylesheet" href="<%= url_for('css/noviluna.css') %>?v=<%= asset_v() %>">
   <script>
     window.__NOVILUNA_LANGS__ = <%- JSON.stringify(i18nDump) %>;
     window.__NOVILUNA_DEFAULT_LANG__ = <%- JSON.stringify(siteLang) %>;
