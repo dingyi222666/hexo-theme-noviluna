@@ -1305,3 +1305,25 @@ img
     &.is-active
       color var(--fg)
       font-weight 500
+
+// ---------------------------------------------------------------
+// Theme switch — circular reveal over the View Transitions snapshot
+// (--vt-x/--vt-y/--vt-r are set from the toggle button's position)
+// ---------------------------------------------------------------
+::view-transition-old(root),
+::view-transition-new(root)
+  animation none
+  mix-blend-mode normal
+
+::view-transition-new(root)
+  animation 420ms cubic-bezier(.4, 0, .2, 1) both nv-reveal
+
+@keyframes nv-reveal
+  from
+    clip-path circle(0 at var(--vt-x, 50%) var(--vt-y, 50%))
+  to
+    clip-path circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 50%))
+
+@media (prefers-reduced-motion: reduce)
+  ::view-transition-new(root)
+    animation none

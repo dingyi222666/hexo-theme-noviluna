@@ -79,14 +79,28 @@
         const f = $('iframe.giscus-frame')?.contentWindow;
         f?.postMessage({ giscus: { setConfig: { theme: root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light' } } }, 'https://giscus.app');
     };
-    $('.theme-toggle')?.addEventListener('click', () => {
+    // Theme switch: the new scheme spreads out of the button as a growing circle
+    // (View Transitions snapshots both states; CSS animates the clip-path).
+    $('.theme-toggle')?.addEventListener('click', (e) => {
         const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', next);
-        try {
-            localStorage.setItem('theme', next);
-        }
-        catch { /* private mode */ }
-        syncGiscus();
+        const apply = () => {
+            root.setAttribute('data-theme', next);
+            try {
+                localStorage.setItem('theme', next);
+            }
+            catch { /* private mode */ }
+            syncGiscus();
+        };
+        const start = doc.startViewTransition;
+        if (!start || matchMedia('(prefers-reduced-motion: reduce)').matches)
+            return apply();
+        const box = e.currentTarget.getBoundingClientRect();
+        const x = box.left + box.width / 2;
+        const y = box.top + box.height / 2;
+        root.style.setProperty('--vt-x', `${x}px`);
+        root.style.setProperty('--vt-y', `${y}px`);
+        root.style.setProperty('--vt-r', `${Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))}px`);
+        start.call(doc, apply);
     });
     const overlay = $('.search-overlay');
     const searchBtn = $('.search-toggle');
