@@ -4,6 +4,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+**Live demo:** https://blog.dingyi222666.top/
+
 <p align="center">
   <img src="screenshots/index-light.webp" width="100%" alt="Index Light">
 </p>
