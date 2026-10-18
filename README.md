@@ -19,6 +19,7 @@ English | [简体中文](README.zh-CN.md)
 - **Typography**: a 720px prose column (17px/1.625) set in Geist / Geist Mono with HarmonyOS Sans SC.
 - **Colour system**: CSS-token-driven palettes, low-contrast syntax highlighting, and adaptive `prefers-color-scheme`.
 - **GFM**: GitHub alerts (`> [!NOTE]`), folding, footnotes and task lists.
+- **Taxonomy & links** — a chip cloud for tags and categories, a card grid for the links page.
 - **Pure and light**: zero third-party CSS/JS runtime dependencies — all client interaction (search, TOC highlighting, theme and language switching) is ~170 lines of vanilla JS.
 - **Works out of the box**: full-keyboard local search over a generated `search.json`, build-time same-tag related posts, lazy-loaded Giscus comments that follow the theme, and reload-free client-side bilingual UI switching (`zh-CN` / `en`).
 

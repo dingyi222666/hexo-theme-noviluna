@@ -1141,26 +1141,94 @@ img
     margin-top 18vh
 
 // ---------------------------------------------------------------
-// Links page — friend rows in the archive-row pattern
+// Tags / categories — a chip cloud instead of a list
 // ---------------------------------------------------------------
-.links-list
-  margin-top var(--sp-12)
+.chip-list
+  max-width var(--prose)
+  margin var(--sp-12) auto 0
+  display flex
+  flex-wrap wrap
+  gap var(--sp-2)
 
-.link-row
-  grid-template-columns 14ch minmax(0, 1fr)
+.chip
+  display inline-flex
+  align-items baseline
+  gap var(--sp-2)
+  padding var(--sp-1) var(--sp-3)
+  border 1px solid var(--border)
+  border-radius var(--radius-pill)
+  font-size var(--text-sm)
+  line-height 1.6
+  color var(--fg)
+  text-decoration none
+  transition border-color var(--transition), background var(--transition)
+
+  &:hover
+    background var(--bg-hover)
+    border-color var(--border-strong)
+
+  .chip-name
+    letter-spacing -0.005em
+
+  .chip-count
+    font-size var(--text-xs)
+    color var(--fg-faint)
+    font-variant-numeric tabular-nums
+
+// ---------------------------------------------------------------
+// Links page — friend cards
+// ---------------------------------------------------------------
+.link-grid
+  max-width var(--prose)
+  margin var(--sp-12) auto 0
+  display grid
+  grid-template-columns repeat(2, minmax(0, 1fr))
+  gap var(--sp-3)
+
+.link-card
+  display flex
+  align-items center
+  gap var(--sp-3)
+  padding var(--sp-3) var(--sp-4)
+  border 1px solid var(--border)
+  border-radius var(--radius)
+  color var(--fg)
+  text-decoration none
+  transition border-color var(--transition), background var(--transition)
+
+  &:hover
+    background var(--bg-hover)
+    border-color var(--border-strong)
+
+.link-avatar
+  width 32px
+  height 32px
+  flex none
+  border-radius var(--radius)
+  object-fit cover
+  border 1px solid var(--border)
+
+.link-card-body
+  display flex
+  flex-direction column
+  gap 2px
+  min-width 0
 
 .link-name
-  font-size 1.0625rem
+  font-size var(--text-base)
   font-weight 500
   letter-spacing -0.01em
   color var(--fg)
 
 .link-desc
-  font-size var(--text-sm)
-  color var(--fg-muted)
+  font-size var(--text-xs)
+  color var(--fg-faint)
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
 
-@media (max-width: 640px)
-  .link-row
+@media (max-width 640px)
+  .link-grid
     grid-template-columns 1fr
 
 // ---------------------------------------------------------------

@@ -4,13 +4,11 @@
   </header>
 </article>
 
-<section class="post-list links-list">
-  <% site.tags.sort('name').each(function (tag) { %>
-    <a class="post-row link-row" href="<%= url_for(tag.path) %>">
-      <span class="link-name"><%= tag.name %></span>
-      <span class="post-row-body">
-        <span class="link-desc" data-i18n-fmt="archive.post_count" data-i18n-args="<%= encodeURIComponent(JSON.stringify([String(tag.length)])) %>"><%= __('archive.post_count', tag.length) %></span>
-      </span>
+<section class="chip-list">
+  <% site.tags.sort('length', -1).each(function (tag) { %>
+    <a class="chip" href="<%= url_for(tag.path) %>">
+      <span class="chip-name"><%= tag.name %></span>
+      <span class="chip-count"><%= tag.length %></span>
     </a>
   <% }); %>
 </section>

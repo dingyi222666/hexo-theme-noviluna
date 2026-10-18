@@ -16,12 +16,15 @@
       <p class="article-meta" data-en="<%= introV.en %>" data-zh="<%= introV['zh-CN'] %>"><%= intro %></p>
     </header>
   </article>
-  <section class="post-list links-list">
+  <section class="link-grid">
     <% (site.data.links || []).forEach(function (link) { %>
-      <a class="post-row link-row" href="<%= link.url %>" target="_blank" rel="noopener">
-        <span class="link-name"><%= link.name %></span>
-        <span class="post-row-body">
-          <span class="link-desc"><%= link.desc %></span>
+      <a class="link-card" href="<%= link.url %>" target="_blank" rel="noopener">
+        <% if (link.avatar) { %>
+          <img class="link-avatar" src="<%= link.avatar %>" alt="" width="32" height="32" loading="lazy">
+        <% } %>
+        <span class="link-card-body">
+          <span class="link-name"><%= link.name %></span>
+          <% if (link.desc) { %><span class="link-desc"><%= link.desc %></span><% } %>
         </span>
       </a>
     <% }); %>
